@@ -1,0 +1,97 @@
+---
+- name: Tomcat deployment playbook
+  hosts: tomcat-nodes       # Inventory hosts group / server to act on
+  become: yes               # If to escalate privilege
+  become_method: sudo       # Set become method
+  remote_user: root         # Update username for remote server
+  vars:
+    tomcat_ver: 9.0.30                          # Tomcat version to install
+    ui_manager_user: manager                    # User who can access the UI manager section only
+    ui_manager_pass: Str0ngManagerP@ssw3rd      # UI manager user password
+    ui_admin_username: admin                    # User who can access bpth manager and admin UI sections
+    ui_admin_pass: Str0ngAdminP@ssw3rd          # UI admin password
+  roles:
+    - tomcat
+
+
+
+
+How to execute the playbook
+
+$ ansible-playbook -i hosts tomcat-setup.yml
+Playbook executed as root user – with password:
+
+$ ansible-playbook -i hosts tomcat-setup.yml --ask-pass
+Playbook executed as sudo user – with password:
+
+$ ansible-playbook -i hosts tomcat-setup.yml --ask-pass --ask-become-pass
+Playbook executed as sudo user – with ssh key and sudo password:
+
+$ ansible-playbook -i hosts tomcat-setup.yml --ask-become-pass
+Playbook executed as sudo user – with ssh key and passwordless sudo:
+
+$ ansible-playbook -i hosts tomcat-setup.yml --ask-become-pass
+A successful installation output will show output similar to below.
+
+PLAY [Tomcat deployment playbook] **********************************************************************************************************************
+
+TASK [Gathering Facts] *********************************************************************************************************************************
+Enter passphrase for key '/var/home/jkmutai/.ssh/id_rsa': 
+ok: [ubuntu01]
+
+TASK [tomcat : Add the OS specific variables] **********************************************************************************************************
+ok: [ubuntu01] => (item=/tmp/tomcat-ansible/tmp2/tomcat-ansible/roles/tomcat/vars/Debian.yml)
+
+TASK [tomcat : include_tasks] **************************************************************************************************************************
+included: /tmp/tomcat-ansible/tmp2/tomcat-ansible/roles/tomcat/tasks/tomcat-setup-Debian.yml for ubuntu01
+
+TASK [tomcat : Ensure the system can use the HTTPS transport for APT.] *********************************************************************************
+ok: [ubuntu01]
+
+TASK [tomcat : Install APT HTTPS transport.] ***********************************************************************************************************
+skipping: [ubuntu01]
+
+TASK [tomcat : Install basic packages] *****************************************************************************************************************
+[WARNING]: Updating cache and auto-installing missing dependency: python-apt
+
+changed: [ubuntu01]
+
+TASK [tomcat : Install Default Java (Debian/Ubuntu)] ***************************************************************************************************
+changed: [ubuntu01]
+
+TASK [tomcat : Add tomcat group] ***********************************************************************************************************************
+changed: [ubuntu01]
+
+TASK [tomcat : Add "tomcat" user] **********************************************************************************************************************
+changed: [ubuntu01]
+
+TASK [tomcat : Download Tomcat] ************************************************************************************************************************
+changed: [ubuntu01]
+
+TASK [tomcat : Create a tomcat directory] **************************************************************************************************************
+changed: [ubuntu01]
+
+TASK [tomcat : Extract tomcat archive] *****************************************************************************************************************
+changed: [ubuntu01]
+
+TASK [tomcat : Copy tomcat service file] ***************************************************************************************************************
+changed: [ubuntu01]
+
+TASK [tomcat : Start and enable tomcat] ****************************************************************************************************************
+changed: [ubuntu01]
+
+TASK [tomcat : Set UI access credentials] **************************************************************************************************************
+changed: [ubuntu01]
+
+TASK [tomcat : Allow access to Manager and Host Manager apps from any IP] ******************************************************************************
+changed: [ubuntu01] => (item=/usr/share/tomcat/webapps/host-manager/META-INF/context.xml)
+changed: [ubuntu01] => (item=/usr/share/tomcat/webapps/manager/META-INF/context.xml)
+
+RUNNING HANDLER [tomcat : restart tomcat] **************************************************************************************************************
+changed: [ubuntu01]
+
+PLAY RECAP *********************************************************************************************************************************************
+ubuntu01                   : ok=16   changed=12   unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+Step 4: Test Tomcat Installation
+
+Visit the server URL on port 8080. to test tomcat installation and configuration.
