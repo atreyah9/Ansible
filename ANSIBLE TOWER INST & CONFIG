@@ -1,0 +1,73 @@
+Version: v3.2.6
+License Basic/free: 10 Nodes max 20 years to expire
+License Enterprise : 1000 Servers/nodes can be managed expiry 100000 Days 
+
+Before u install make sure we have a very big hard disk where the minimum requirement is very high so create a ec2 instance of 
+ Red Hat
+Free tier eligible
+Select
+64-bit
+Red Hat Enterprise Linux 7.5 (HVM), SSD Volume Type
+
+General Purpose t2.xlarge 4 CPU’s 16 GB ram would be best
+
+Ansible Tower has the following requirements:
+¥	Supported Operating Systems: Red Hat Enterprise Linux 6 64-bit. ... 
+¥	The latest stable release of Ansible.
+¥	2 GB RAM minimum (4+ GB RAM recommended) ... 
+¥	20 GB hard disk.
+¥	64-bit support required (kernel and runtime)
+¥	For Amazon EC2: ... 
+¥	For HA MongoDB setups:
+Prerequisites
+Before starting for Ansible Tower you need rhel-7-server-rpms, rhel-7-server-extras-rpms and EPEL. 1. Install and configure EPEL repositories:
+[root@devops]$ yum install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+2. Install Ansible
+[root@devops]$ yum install -y ansible
+ 
+Install Ansible Tower
+Download latest Ansible Tower release.
+
+[root@devops]$ yum install wget
+[root@devops]$ wget http://releases.ansible.com/ansible-tower/setup/ansible-tower-setup-3.1.5.tar.gz
+[root@devops]$ tar -xzvf ansible-tower-setup-3.1.5.tar.gz
+
+Configure Setup. Ansible Tower uses an Ansible playbook to deploy itself. As such configuration parameters or groupvars are stored in inventory file.
+
+[root@devops]$ cd ansible-tower-setup-3.1.5/
+[root@devops]$ vi inventory
+
+[tower]
+ localhost ansible_connection=local
+
+[database]
+
+[all:vars]
+ admin_password='password'
+
+ pg_host=''
+ pg_port=''
+
+ pg_database='awx'
+ pg_username='awx'
+ pg_password='password'
+
+ rabbitmq_port=5672
+ rabbitmq_vhost=tower
+ rabbitmq_username=tower
+ rabbitmq_password='password'
+ rabbitmq_cookie=cookiemonster
+
+ # Needs to be true for fqdns and ip addresses
+ rabbitmq_use_long_name=false
+
+Run Setup.
+[root@devops]$ ./setup.sh
+ 
+Configure Ansible Tower
+Ansible Tower Provides a RESTful API, CLI and UI. To connect to the UI simply open browser using http/https and point to your Ansible Tower IP or hostname.
+https://<Ansible Tower IP or Hostname>
+Login using the user you configured in the inventory file, in this case admin/password.
+
+
+Once you are logged in, you need to configure license. Tower license comes in a file, so simply browse to the file and accept the terms. If you don’t have a license you can get a trial here.
