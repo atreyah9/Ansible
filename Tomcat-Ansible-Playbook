@@ -14,6 +14,11 @@
     - tomcat
 
 
+cd /etc/ansible/
+Update your inventory, e.g:
+vi hosts
+[tomcat-nodes]
+192.168.20.55/hostname
 
 
 How to execute the playbook
